@@ -27,8 +27,10 @@ export const Login = () => {
 
         const clientId = '31a175bc0d4d4adbbb3daaad161ca80d';
         const redirectUri = 'http://localhost:5173/app';
+        // const redirectUri = 'https://806f-2601-243-c06-24d0-706e-d046-5cce-773c.ngrok-free.app/app';
 
-        const scope = 'user-read-private user-read-email user-library-read playlist-read-private playlist-read-collaborative user-top-read user-read-recently-played';
+        // const scope = 'user-read-private user-read-email user-library-read playlist-read-private playlist-read-collaborative user-top-read user-read-recently-played';
+        const scope = 'ugc-image-upload user-read-playback-state user-modify-playback-state user-read-currently-playing streaming app-remote-control user-read-email user-read-private playlist-read-collaborative playlist-modify-public playlist-read-private playlist-modify-private user-library-modify user-library-read user-top-read user-read-playback-position user-read-recently-played user-follow-read user-follow-modify';
         const authUrl = new URL("https://accounts.spotify.com/authorize")
 
         window.localStorage.setItem('code_verifier', codeVerifier);
