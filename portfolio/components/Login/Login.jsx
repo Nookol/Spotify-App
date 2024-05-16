@@ -1,45 +1,55 @@
-import { useEffect } from "react";
-import axios from "axios";
+export const Login = () => {
 
-const Login = () => {
+    const generateRandomString = (length) => {
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const values = crypto.getRandomValues(new Uint8Array(length));
+        return values.reduce((acc, x) => acc + possible[x % possible.length], "");
+    }
 
-    const CLIENT_ID = '31a175bc0d4d4adbbb3daaad161ca80d';
-    const REDIRECT_URI = 'http://localhost:3000/callback';
+    const sha256 = async (plain) => {
+        const encoder = new TextEncoder()
+        const data = encoder.encode(plain)
+        return window.crypto.subtle.digest('SHA-256', data)
+    }
 
-    const handleLogin = () => {
-        window.location.href = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=user-read-private%20user-read-email`;
-    };
+    const base64encode = (input) => {
+        return btoa(String.fromCharCode(...new Uint8Array(input)))
+            .replace(/=/g, '')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_');
+    }
 
-    useEffect(() => {
-        const handleAuthorization = async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const authorizationCode = urlParams.get('code');
 
-            if (authorizationCode) {
-                const data = {
-                    grant_type: 'authorization_code',
-                    code: authorizationCode,
-                    redirect_uri: REDIRECT_URI,
-                    client_id: CLIENT_ID,
-                };
+    const handleLogin = async () =>{
+        const codeVerifier  = generateRandomString(64);
+        const hashed = await sha256(codeVerifier)
+        const codeChallenge = base64encode(hashed);
 
-                try {
-                    const response = await axios.post('http://localhost:3000/login', data);
-                    const accessToken = response.data.access_token;
-                    console.log('Access token:', accessToken);
-                } catch (error) {
-                    console.error('Error exchanging authorization code for access token:', error);
-                }
-            }
-        };
+        const clientId = '31a175bc0d4d4adbbb3daaad161ca80d';
+        const redirectUri = 'http://localhost:5173/app';
 
-        handleAuthorization();
-    }, [CLIENT_ID, REDIRECT_URI]);
+        const scope = 'user-read-private user-read-email user-library-read playlist-read-private playlist-read-collaborative user-top-read user-read-recently-played';
+        const authUrl = new URL("https://accounts.spotify.com/authorize")
+
+        window.localStorage.setItem('code_verifier', codeVerifier);
+
+        const params =  {
+            response_type: 'code',
+            client_id: clientId,
+            scope: scope,
+            code_challenge_method: 'S256',
+            code_challenge: codeChallenge,
+            redirect_uri: redirectUri,
+        }
+
+        authUrl.search = new URLSearchParams(params).toString();
+        window.location.href = authUrl.toString();
+    }
+
 
     return (
         <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
             <h1>See How You Listen</h1>
-            {/*<img height={100} src={"https://banner2.cleanpng.com/20190414/wia/kisspng-spotify-portable-network-graphics-clip-art-compute-5cb33439c9cd98.1004452415552481858266.jpg"} alt={"Spotify Logo"}/>*/}
             <button onClick={handleLogin}>Log in with Spotify</button>
         </div>
     );

@@ -1,32 +1,27 @@
-import {useEffect, useState} from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export const useSpotifyAPI = (endpoint, token) => {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`https://api.spotify.com/v1${endpoint}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data from Spotify API');
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(`https://api.spotify.com/v1${endpoint}?offset=0&limit=5`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
+            });
+            setData(response.data);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-                const jsonData = await response.json();
-                setData(jsonData);
-                setIsLoading(false);
-            } catch (error) {
-                setError(error);
-                setIsLoading(false);
-            }
-        };
-
+    useEffect(() => {
         fetchData();
     }, [endpoint, token]);
 
