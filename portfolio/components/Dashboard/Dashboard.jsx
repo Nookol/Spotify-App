@@ -7,7 +7,7 @@ import { useSpotifyAPI } from "../../SpotifyApi.jsx";
 
 export const Dashboard = () => {
     const [timer, setTimer] = useState(false);
-    const [userData, setUserData] = useState(null); // State to hold user profile data
+    const [userData, setUserData] = useState(null);
 
     const { data, isLoading, error } = useSpotifyAPI('/me');
 

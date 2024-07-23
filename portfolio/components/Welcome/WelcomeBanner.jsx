@@ -28,8 +28,8 @@ export const WelcomeBanner = ( {username, profileImg} ) => {
         <div style={{display:"flex", justifyContent:"center", placeItems:"center",width:'100vw', height:'100vh'}}
             className={styles.container} onClick={() => set(state => !state)}>
             <Trail open={open}>
-                <span>Welcome</span>
-                <span style={{color: "#1DB954"}}>{username}</span>
+                <span style={{fontSize: '4rem'}}>Welcome</span>
+                <span style={{color: "#1a1a1a", fontSize: '5rem' }}>{username}</span>
                 <img src={profileImg} style={{borderRadius: "100%"}} height={64} width={64} alt={"Profile Picture"}/>
             </Trail>
         </div>

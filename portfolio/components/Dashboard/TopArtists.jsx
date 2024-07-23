@@ -15,10 +15,67 @@ export const TopArtists = () => {
         }
     }, [data]);
 
-    return (
-        <div style={{display: "flex", alignItems: "center", background: "#1db954", height: "100%"}}>
-            <div style={{padding: 20, display: "flex", flexDirection: "column"}}>
-                <h1 style={{width:"100px"}}>Your Top Artists</h1>
+    const isMobile = () => {
+        return window.matchMedia("(max-width: 600px)").matches;
+    };
+
+    const [mobile, setMobile] = useState(isMobile());
+
+    useEffect(() => {
+        const handleResize = () => {
+            setMobile(isMobile());
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        handleResize();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    return ((mobile ? (
+            <div style={{
+                display: "flex",
+                flexDirection: 'column',
+                alignItems: "center",
+                background: "#d696bb",
+                height: "100%",
+                padding:5
+            }}>
+                <div style={{padding: 23, display: "flex", flexDirection: "column"}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: 15}}>
+                        <h1 style={{fontSize: '1.9rem'}}>Top Artists</h1>
+                        <Select
+                            id="timeRangeSelect"
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value)}
+                        >
+                            <MenuItem value="short_term">4 Weeks</MenuItem>
+                            <MenuItem value="medium_term">6 Months</MenuItem>
+                            <MenuItem value="long_term">All time</MenuItem>
+                        </Select>
+                    </div>
+                </div>
+                <div style={{width: '100%', height: '99%', overflowX: 'auto', overflowY: 'hidden'}}>
+                    <Table striped bordered hover variant="dark" style={{minWidth: '600px'}}>
+                        <tbody>
+                        <tr>
+                            {artistData.map((artist, index) => (
+                                <td key={index}>
+                                    <ListItem artist={artist} index={index}/>
+                                </td>
+                            ))}
+                        </tr>
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
+        ) :
+        (<div style={{display: "flex", alignItems: "center", background: "#1db954", height: "100%"}}>
+            <div style={{padding: '1vw', display: "flex", flexDirection: "column"}}>
+                <h1 style={{width: "10vw"}}>Your Top Songs</h1>
                 <Select
                     id="timeRangeSelect"
                     value={timeRange}
@@ -32,29 +89,50 @@ export const TopArtists = () => {
             <div style={{overflowX: "auto"}}>
                 <Table>
                     <tbody>
-                        <tr>
-                            {artistData.map((artist, index) => (
-                                <td key={index}>
-                                    <ListItem artist={artist} index={index}/>
-                                </td>
-                            ))}
-                        </tr>
+                    <tr>
+                        {artistData.map((artist, index) => (
+                            <td key={index}>
+                                <ListItem artist={artist} index={index}/>
+                            </td>
+                        ))}
+                    </tr>
                     </tbody>
                 </Table>
             </div>
-        </div>
-    );
+        </div>)));
 };
 
 
 const ListItem = ({artist}) => {
+
+    const [width, setWidth] = useState(window.innerWidth);
+    const [height, setHeight] = useState(window.innerHeight);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWidth(window.innerWidth);
+            setHeight(window.innerHeight);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        handleResize();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    const baseSize = 400;
+    const squareSize = width < 600 ? Math.min(width / 1.1, height / 1.1) : baseSize;
+
     return (
         <div style={{textAlign: "center"}}>
             <div style={{position: "relative", display: "inline-block"}}>
                 <img
                     onClick={() => open(artist.external_urls.spotify)}
-                    width={400}
-                    height={400}
+                    width={squareSize}
+                    height={squareSize}
                     src={artist.images[0].url}
                     alt={artist.name}
                 />
@@ -64,7 +142,7 @@ const ListItem = ({artist}) => {
                         top: 0,
                         left: 0,
                         width: "100%",
-                        backgroundColor: "rgba(29,185,84,0.45)",
+                        backgroundColor: "rgba(14,19,26,0.6)",
                     }}
                 >
                     <h3 style={{margin: 0, padding: 5}}>
