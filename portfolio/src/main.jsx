@@ -4,10 +4,18 @@ import './index.css';
 import {BrowserRouter as Router, Routes, Route, Navigate, useHref} from 'react-router-dom';
 import Login from "../components/Login/Login.jsx";
 import {Dashboard} from "../components/Dashboard/Dashboard.jsx";
+import {Button, Image} from "react-bootstrap";
+import logoutIcon from '../assets/icons/logout.svg'
+
+export const redirect_uri = 'https://weeklywrapped.netlify.app/'
+export const redirectUri_DEV = 'http://localhost:5173/app';
 
 const App = () => {
 
     const [signedIn, setSignedIn] = useState(null);
+
+    const redirectUri = redirect_uri;
+    // const redirectUri = redirectUri_DEV;
 
     useEffect(() => {
         const fetchTokenAndCheckAuthentication = async () => {
@@ -25,7 +33,7 @@ const App = () => {
                         client_id: '31a175bc0d4d4adbbb3daaad161ca80d',
                         grant_type: 'authorization_code',
                         code: authCode,
-                        redirect_uri: 'http://localhost:5173/app',
+                        redirect_uri: redirectUri,
                         code_verifier: codeVerifier,
                     }),
                 }
@@ -47,16 +55,33 @@ const App = () => {
 
         const checkAuthentication = async () => {
             const accessToken = localStorage.getItem('access_token');
+            console.log('Access Token:', accessToken);
+
             if (accessToken) {
-                const response = await fetch('https://api.spotify.com/v1/me', {
-                    headers: {
-                        Authorization: 'Bearer ' + accessToken
+                try {
+                    const response = await fetch('https://api.spotify.com/v1/me', {
+                        headers: {
+                            Authorization: 'Bearer ' + accessToken
+                        }
+                    });
+
+                    const data = await response.json();
+                    console.log('Response Data:', data);
+
+                    if (!response.ok) {
+                        console.error('Failed to authenticate:', data.error || 'Unknown error');
                     }
-                });
-                return response.ok;
+
+                    return response.ok;
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    return false;
+                }
             }
+
             return false;
         };
+
 
         fetchTokenAndCheckAuthentication();
     }, []);
@@ -67,10 +92,12 @@ const App = () => {
         window.location.href = '/';
     };
 
-
     return (
         <React.StrictMode>
-            {signedIn && <button style={{ zIndex:10, background:"rgba(255,255,255,0.23)" ,position:"absolute", top:0, leftt:0}} onClick={handleLogout}>Log out</button>}
+            {signedIn &&
+                <Button style={{background: "rgba(255,255,255,0)" ,zIndex: 999, position: "absolute", top: -1, right:0}} onClick={handleLogout}>
+                    <Image draggable={false} style={{padding: 5,borderRadius: "50%",background: "rgba(255,255,255,0.16)"}} src={logoutIcon}/>
+                </Button>}
             <Router>
                 <Routes>
                     {signedIn ? (
