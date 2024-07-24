@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {BrowserRouter as Router, Routes, Route, Navigate, useHref} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Login from "../components/Login/Login.jsx";
 import {Dashboard} from "../components/Dashboard/Dashboard.jsx";
 import {Button, Image} from "react-bootstrap";
 import logoutIcon from '../assets/icons/logout.svg'
+import {CLIENT_SECRET} from "../secret/key.jsx";
 
 export const redirect_uri = 'https://weeklywrapped.netlify.app/'
 export const redirectUri_DEV = 'http://localhost:5173/app';
@@ -30,7 +31,7 @@ const App = () => {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams({
-                        client_id: '31a175bc0d4d4adbbb3daaad161ca80d',
+                        client_id: CLIENT_SECRET,
                         grant_type: 'authorization_code',
                         code: authCode,
                         redirect_uri: redirectUri,
