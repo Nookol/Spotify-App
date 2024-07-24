@@ -13,6 +13,11 @@ export const redirectUri_DEV = 'http://localhost:5173/app';
 
 const App = () => {
 
+    const test = process.env.CLIENT_SECRET;
+    console.log('Client ID:', process.env.CLIENT_SECRET);
+    console.log('Client ID:', test);
+
+
     const [signedIn, setSignedIn] = useState(null);
 
     const redirectUri = redirect_uri;
