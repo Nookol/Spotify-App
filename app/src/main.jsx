@@ -13,11 +13,6 @@ export const redirectUri_DEV = 'http://localhost:5173/app';
 
 const App = () => {
 
-    const test = process.env.CLIENT_SECRET;
-    console.log('Client ID:', process.env.CLIENT_SECRET);
-    console.log('Client ID:', test);
-
-
     const [signedIn, setSignedIn] = useState(null);
 
     const redirectUri = redirect_uri;
@@ -36,7 +31,7 @@ const App = () => {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams({
-                        client_id: process.env.CLIENT_SECRET,
+                        client_id: process.env.REACT_APP_CLIENT_SECRET,
                         grant_type: 'authorization_code',
                         code: authCode,
                         redirect_uri: redirectUri,
