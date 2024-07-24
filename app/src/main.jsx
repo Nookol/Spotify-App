@@ -31,7 +31,7 @@ const App = () => {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams({
-                        client_id: CLIENT_SECRET,
+                        client_id: process.env.CLIENT_SECRET,
                         grant_type: 'authorization_code',
                         code: authCode,
                         redirect_uri: redirectUri,
