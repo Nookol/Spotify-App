@@ -6,7 +6,7 @@ import Login from "../components/Login/Login.jsx";
 import {Dashboard} from "../components/Dashboard/Dashboard.jsx";
 import {Button, Image} from "react-bootstrap";
 import logoutIcon from '../assets/icons/logout.svg'
-import {CLIENT_SECRET} from "../secret/key.jsx";
+// import {CLIENT_SECRET} from "../secret/key.jsx";
 
 export const redirect_uri = 'https://weeklywrapped.netlify.app/'
 export const redirectUri_DEV = 'http://localhost:5173/app';
