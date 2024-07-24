@@ -14,12 +14,8 @@ export const redirectUri_DEV = 'http://localhost:5173/app';
 const App = () => {
 
     const [signedIn, setSignedIn] = useState(null);
-    const test = process.env.REACT_APP_CLIENT_SECRET;
-    console.log(test)
-    console.log(process.env.CLIENT_SECRET)
-
+    const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
     const redirectUri = redirect_uri;
-    // const redirectUri = redirectUri_DEV;
 
     useEffect(() => {
         const fetchTokenAndCheckAuthentication = async () => {
@@ -34,7 +30,7 @@ const App = () => {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams({
-                        client_id: process.env.REACT_APP_CLIENT_SECRET,
+                        client_id: clientSecret,
                         grant_type: 'authorization_code',
                         code: authCode,
                         redirect_uri: redirectUri,
